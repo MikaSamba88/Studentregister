@@ -1,12 +1,30 @@
 import os
 
+
 students = []
+
 
 def clear_consol():
     if os.name == 'nt':
         os.system('cls')
     else:
         os.system('clear')
+
+def load_student_from_file():
+    try:
+        with open("students.txt", "r") as file:
+            for line in file:
+                name, age = line.strip().split(",")
+                students.append({"name": name, "age": int(age)})
+    except FileNotFoundError:
+        pass
+                
+def save_student_to_file():
+    with open ("students.txt", "w") as file:
+        for s in students:
+            file.write(f"{s['name']},{s['age']}\n")
+
+load_student_from_file()
 
 def print_menu():
     clear_consol()
@@ -31,11 +49,37 @@ def add_student():
            
     students.append({"name": name, "age": age})
     print(f"{name} was added to the list!")
+    
+    save_student_to_file()
+
     print(input("press Enter to continue.."))
         
-#def list_students():  
+def list_students():
+    if not students:
+        print("No students added yet!")
+    else:
+        print("\nStudent List:")
+        print("-" * 25)
+        for i, s in enumerate(students, start=1):
+            print(f"{i}. {s['name']} (Age: {s['age']})")
+            print("-" * 25)
+    print(input("\nPress Enter to continue.."))
 
-#def search_student():
+
+def search_student():
+    search = input("\nEnter students name to search: ")
+    found = False
+
+    for s in students:
+        if s["name"].lower() == search.lower():
+            print(f" Found: {s['name']} (Age: {s['age']})")
+            found = True
+
+    if not found:
+        print(f"Sorry, didnt find {search}.. ")
+
+    input("\nPress Enter to continue")
+
 
 #def avrage_age():
 
