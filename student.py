@@ -1,8 +1,12 @@
 import os
+import sys
+import json
+import prettytable
 
 
-students = []
 
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+FILE_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "students.json")
 
 def clear_consol():
     if os.name == 'nt':
@@ -11,18 +15,16 @@ def clear_consol():
         os.system('clear')
 
 def load_student_from_file():
+    global students
     try:
-        with open("students.txt", "r") as file:
-            for line in file:
-                name, age = line.strip().split(",")
-                students.append({"name": name, "age": int(age)})
+        with open(FILE_PATH, "r") as file:
+           students = json.load(file)
     except FileNotFoundError:
-        pass
+        students = []
                 
 def save_student_to_file():
-    with open ("students.txt", "w") as file:
-        for s in students:
-            file.write(f"{s['name']},{s['age']}\n")
+    with open (FILE_PATH, "w") as file:
+        json.dump(students, file, indent=4)
 
 load_student_from_file()
 
@@ -37,7 +39,7 @@ def print_menu():
     print("4. Avarage Age") 
     print("5. Exit program\n") 
 
-def add_student():
+def add_student(student_list):
     name = input("\nName: ")
 
     while True:
@@ -46,13 +48,18 @@ def add_student():
             break
         except ValueError:
             print("Age must be a number! Try again! ")
+    
+    email = input("Email: ")
+    favorit = input("Enter your Favorit movie: ")
            
-    students.append({"name": name, "age": age})
-    print(f"{name} was added to the list!")
+    students.append({"name": name, "age": age, "email": email, "Favorit_movie": favorit})
+
+    print(f"\n{name} was added to the list!")
     
     save_student_to_file()
 
     print(input("press Enter to continue.."))
+    return students
         
 def list_students():
     if not students:
@@ -61,9 +68,9 @@ def list_students():
         print("\nStudent List:")
         print("-" * 25)
         for i, s in enumerate(students, start=1):
-            print(f"{i}. {s['name']} (Age: {s['age']})")
+            print(f"{i}. {s['name']} (Age: {s['age']}, Email: {s['email']}, Favorite movie: {s['Favorit_movie']})")
             print("-" * 25)
-    print(input("\nPress Enter to continue.."))
+        print(input("\nPress Enter to continue.."))
 
 
 def search_student():
@@ -81,7 +88,16 @@ def search_student():
     input("\nPress Enter to continue")
 
 
-#def avrage_age():
+def average_age():
+    if not students:
+        print("\nNo students available to calculate average age...")
+        print(input("Press Enter to continue.. "))
+        return
+    total_age = sum(s["age"] for s in students)
+    average = total_age / len(students)
+    print(f"\nAverage age: {average:.1f}")
+    input("\nPress Enter to continue..")
+
 
 
 def exit_program():
@@ -91,21 +107,27 @@ def exit_program():
 
 
 
-while True:
-    print_menu()
-    choice = input("Choose a number: ")
+def main():
+    students = []
+    while True:
+        print_menu()
+        choice = input("Choose a number: ")
 
-    if choice == "1":
-        add_student()
-    
-    elif choice == "2":
-        list_students()
+        if choice == "1":
+           students = add_student(students)
+        
+        elif choice == "2":
+            list_students()
 
-    elif choice == "3":
-        search_student()
-    
-    elif choice == "4":
-        avrage_age()
-    
-    elif choice == "5":
-        exit_program()
+        elif choice == "3":
+            search_student()
+        
+        elif choice == "4":
+            average_age()
+        
+        elif choice == "5":
+            exit_program()
+            sys.exit()
+
+if __name__ == "__main__":
+    main()
