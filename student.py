@@ -111,7 +111,7 @@ def main():
     students = []
     while True:
         print_menu()
-        choice = input("Choose a number: ")
+        choice = input("Choose a number(1-5): ")
 
         if choice == "1":
            students = add_student(students)

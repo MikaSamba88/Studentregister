@@ -22,5 +22,11 @@
         "age": 23,
         "email": "wfsd",
         "Favorit_movie": "srghf"
+    },
+    {
+        "name": "Paulina",
+        "age": 34,
+        "email": "paulina.pm@hotmail.com",
+        "Favorit_movie": "shrek"
     }
 ]
